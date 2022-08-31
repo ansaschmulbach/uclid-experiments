@@ -1,0 +1,41 @@
+
+module equivalence {
+
+    const XLEN = 64;
+    type reg_index_t = bv5;
+
+    var regs : [bv5]bv64;
+    
+    procedure read_reg(reg: reg_index_t) {
+        return regs[reg];
+    }
+
+    procedure store_reg(reg: reg_index_t, val: bv64) {
+        regs[reg] = val;
+    }
+
+    procedure and1(rd: reg_index_t, rs1: reg_index_t, rs2: reg_index_t) {
+        var rs1_32: bv32;
+        var rs2_32: bv32;
+        var res = bv_sign_extend(32, (read_reg(rs1) + bv_sign_extend(XLEN-12, imm))[31:0]);
+        store_reg(rd, res);
+    }
+
+    procedure and2(rd: reg_index_t, rs1: reg_index_t, rs2: reg_index_t) {
+        var rs1_32: bv32;
+        var rs2_32: bv32;
+        var res = bv_sign_extend(32, read_reg(rs1)[31:0] + bv_sign_extend(20, imm));
+        store_reg(rd, res);
+    }
+
+    next {
+        
+    }
+
+    control {
+        f = bmc(5);
+        check;
+        print_results;
+    }
+
+}
